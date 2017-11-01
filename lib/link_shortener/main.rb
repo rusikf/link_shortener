@@ -1,3 +1,8 @@
+require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/object/try'
+require 'addressable'
+require 'rest_client'
+
 module LinkShortener
   class Main
     def initialize(url)
