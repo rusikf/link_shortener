@@ -1,7 +1,5 @@
 module LinkShortener
   class Main
-    API_URL = 'https://api.rebrandly.com/v1/'.freeze
-
     def initialize(url)
       @url = url.to_s
     end
