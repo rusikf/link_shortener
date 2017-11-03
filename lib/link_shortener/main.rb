@@ -20,7 +20,7 @@ module LinkShortener
 
     def valid_url?
       parsed = Addressable::URI.parse(@url)
-      %w[http https].include?(parsed.scheme)
+      %w[http https].include?(parsed.scheme) && parsed.domain.present?
     rescue
       nil
     end
