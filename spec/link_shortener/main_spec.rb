@@ -5,17 +5,28 @@ describe LinkShortener::Main do
   let(:rebrandly) { LinkShortener::Rebrandly }
   let(:url) { 'https://google.com' }
 
-  specify 'call service' do
-    allow_any_instance_of(rebrandly).to receive(:call)
-    expect_any_instance_of(rebrandly).to receive(:call).once
+  context 'success' do
+    specify 'call service' do
+      allow_any_instance_of(rebrandly).to receive(:call)
+      expect_any_instance_of(rebrandly).to receive(:call).once
 
-    ClimateControl.modify REBRANDLY_API_KEY: 'aa' do
-      main.new(url).call
+      ClimateControl.modify REBRANDLY_API_KEY: 'aa' do
+        main.new(url).call
+      end
     end
   end
 
-  specify 'dont call service' do
-    expect_any_instance_of(rebrandly).not_to receive(:call)
-    main.new(nil).call
+  context 'fail' do
+    specify 'empty' do
+      expect_any_instance_of(rebrandly).not_to receive(:call)
+      main.new(nil).call
+    end
+
+    specify 'without domain' do
+      expect_any_instance_of(rebrandly).not_to receive(:call)
+      ClimateControl.modify REBRANDLY_API_KEY: 'aa' do
+        main.new('http://g').call
+      end
+    end
   end
 end
