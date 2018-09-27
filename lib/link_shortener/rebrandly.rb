@@ -20,7 +20,7 @@ module LinkShortener
     rescue RestClient::ExceptionWithResponse => e
       process_api_error(e)
     rescue => e
-      Rollbar.error(e.message)
+      Rollbar.warning(e)
       nil
     end
 
