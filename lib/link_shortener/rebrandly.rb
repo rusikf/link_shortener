@@ -55,7 +55,7 @@ module LinkShortener
       return if redis.get(key) # prevent reaching rollbar limits
       redis.set(key, true)
       redis.expire(key, 2.hours.to_i)
-      Rollbar.error("#{e.message}; #{e.response.body}")
+      Rollbar.warning(e)
       nil
     end
 
