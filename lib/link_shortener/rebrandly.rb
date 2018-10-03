@@ -17,10 +17,8 @@ module LinkShortener
       url = parse_field(response, 'shortUrl')
       return nil if url.blank?
       "#{protocol}://#{url}"
-    rescue RestClient::ExceptionWithResponse => e
-      process_api_error(e)
-    rescue => e
-      Rollbar.warning(e)
+    rescue StandardError => e
+      raise(e) if ENV['DEBUG_LINKS'].present?
       nil
     end
 
@@ -47,20 +45,6 @@ module LinkShortener
 
     def protocol_for(response)
       parse_field(response, 'https') ? 'https' : 'http'
-    end
-
-    def process_api_error(e)
-      key = "link_error_raised_#{e.message[0..10]}"
-
-      return if redis.get(key) # prevent reaching rollbar limits
-      redis.set(key, true)
-      redis.expire(key, 2.hours.to_i)
-      Rollbar.warning(e)
-      nil
-    end
-
-    def redis
-      Redis.current
     end
   end
 end
